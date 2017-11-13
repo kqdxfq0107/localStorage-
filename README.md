@@ -1,0 +1,2 @@
+# localStorage-
+这几天研究了一下设置localStorage过期时间的问题，打算用js封装一下这个函数
