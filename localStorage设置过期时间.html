@@ -6,38 +6,71 @@
 		
 	</head>
 	<body>
-		<input type="button" id="btn"/>
+		<input type="text" id="key" value="" />请输入key<br />
+		<input type="text" id="value" value="" />请输入value<br />
+		<input type="text" id="period" value="" />请输入period<br />
+		<input type="button" id="set" value="set" /><br />
+		
+		
+		<input type="button" class="get" value="get zf1"/>
+		<input type="button" class="get" value="get zf2"/>
+		<input type="button" class="get" value="get zf3"/>
+		<input type="button" class="get" value="get zf4"/>
 		
 		<script>
+			console.log(localStorage.zf1);
+			console.log(localStorage.zf2);
+			console.log(localStorage.zf3);
+			console.log(localStorage.zf4);
 			
+			var key = document.getElementById("key");
+			var value = document.getElementById("value");
+			var period = document.getElementById("period");
 			
-			console.log(localStorage);
-			
-		    var name='zfzf';
-			var info='{"age":24,"job":"FEFE"}';
-			set(name,info);
-			
-			
-			var btn=document.getElementById("btn");
-			btn.onclick=function(){
-				console.log(get(name,1000*60));
-				
+			var setBtn = document.getElementById("set");
+			setBtn.onclick = function(){
+				set(key.value,value.value,period.value);
 			}
 			
 			
-			function set(key,value){
-				var curTime=new Date().getTime();
-				localStorage.setItem(key,JSON.stringify({data:value,time:curTime}));
+			var getBtns = document.querySelectorAll(".get");
+			for(let i = 0;i < getBtns.length;i++){
+				getBtns[i].onclick = function(){
+					get('zf'+(i+1));
+					
+				}				
 			}
 			
-			function get(key,period){
-				var obj=JSON.parse(localStorage.getItem(key));
-				
-				if(new Date().getTime()-obj.time>period){
+//			set('zf1','{"name":zf1,"job":"FE"}',1000*5);
+			
+			
+			var timer = setInterval(function(){
+				var curTime = new Date().getTime();
+				for(attr in localStorage){
+					console.log(JSON.parse(localStorage[attr]).time);
+					if(curTime - JSON.parse(localStorage[attr]).time > JSON.parse(localStorage[attr]).last){
+						localStorage.removeItem(attr);
+					}
+				}
+			},1000);
+			
+			function set(key,value,period){
+				var curTime = new Date().getTime();
+				localStorage.setItem(key,JSON.stringify({data:value,time:curTime,last:period}));
+			}
+			
+			function get(key){
+				var obj = JSON.parse(localStorage.getItem(key));
+//				console.log(obj);
+				if(obj){
+					if(new Date().getTime() - obj.time > obj.last){
 					alert('已超时');
+					}else{
+						console.log(obj.data);
+						return obj.data;
+					}				
 				}else{
-//					console.log(obj.data);
-					return JSON.parse(obj.data);
+					alert('不存在的')
 				}
 			}
 		</script>
